@@ -95,6 +95,7 @@ jobs:
           FAIL_CVE_COUNT: 1000
           FAIL_CVE_SCORE: 10
           FULL_IMAGE_NAME: ${{ steps.prep.outputs.tags }}
+        if: ${{ failure() }}
         run: |
           mkdir deepfence_docker
           docker_config_path="$(pwd)/deepfence_docker"
