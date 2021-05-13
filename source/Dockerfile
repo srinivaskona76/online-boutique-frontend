@@ -30,4 +30,4 @@ COPY --from=builder /go/bin/frontend /frontend/server
 COPY ./templates ./templates
 COPY ./static ./static
 EXPOSE 8080
-ENTRYPOINT ["/frontend/server"] 
+ENTRYPOINT ["/frontend/server"]
