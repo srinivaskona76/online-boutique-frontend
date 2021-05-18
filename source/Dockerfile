@@ -12,8 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM golang:1.15-alpine as builder
-RUN apk add --no-cache ca-certificates git
+FROM golang:1.15-buster as builder
+RUN set -x \
+  && apt-get update \
+  && apt-get install --no-install-recommends --no-install-suggests -y ca-certificates \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
 WORKDIR /src
 
 # restore dependencies
@@ -22,9 +25,10 @@ RUN go mod download
 COPY . .
 RUN go build -o /go/bin/frontend .
 
-FROM alpine as release
-RUN apk add --no-cache ca-certificates \
-    busybox-extras net-tools bind-tools
+FROM debian:buster-slim as release
+RUN set -x \
+  && apt-get update \
+  && apt-get install --no-install-recommends --no-install-suggests -y ca-certificates dnsutils net-tools
 WORKDIR /frontend
 COPY --from=builder /go/bin/frontend /frontend/server
 COPY ./templates ./templates
